@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Owl You Need Is Apples</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="A tiny pixel-art platformer: help the little owl collect heart apples and find the way home.">
+  <meta name="theme-color" content="#2b1a12">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Owl Apples">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <meta property="og:title" content="Owl You Need Is Apples">
+  <meta property="og:image" content="assets/poster.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-screen="title">
+  <div id="app">
+    <header class="banner">
+      <span class="leaf"></span>
+      <h1><span class="t-owl">OWL</span> <span class="t-mid">YOU NEED IS</span> <span class="t-apples">APPLES</span></h1>
+      <span class="leaf right"></span>
+    </header>
+
+    <div class="hud" role="status">
+      <div class="cell"><label>SCORE</label><b id="hud-score">000000</b></div>
+      <div class="cell"><label>LIVES</label><span id="hud-lives" class="lives"></span></div>
+      <div class="cell"><label>APPLES</label><span class="apples"><img id="hud-apple-icon" alt=""><b id="hud-apples">0/5</b></span></div>
+      <div class="cell stage"><label id="hud-stage">STAGE 1-1</label><small id="hud-name">APPLE MEADOW</small></div>
+      <div class="cell buttons">
+        <button class="icon-btn mute" aria-label="Toggle sound" aria-pressed="false">&#9835;</button>
+        <button class="icon-btn" id="btn-pause" aria-label="Pause">II</button>
+      </div>
+    </div>
+
+    <main id="play">
+      <div class="pad left-pad" aria-hidden="true">
+        <div class="dpad" id="dpad"><span class="arrow l">&#9664;</span><span class="arrow r">&#9654;</span></div>
+      </div>
+
+      <div id="stage">
+        <canvas id="game" width="400" height="224"></canvas>
+
+        <section class="overlay" id="title">
+          <div class="card title-card">
+            <img class="poster" src="assets/poster.jpg" alt="Pixel-art poster: a little owl with pink glasses holding a heart apple on a rainbow bridge">
+            <div class="title-side">
+              <h2><span class="t-owl">OWL</span> YOU NEED IS <span class="t-apples">APPLES</span></h2>
+              <p>Help the little owl find <b>5 heart apples</b> in every stage, then follow the rainbow home!</p>
+              <button class="btn primary" id="btn-play">&#9654; PLAY</button>
+              <ul class="howto keys-only">
+                <li><kbd>&larr;</kbd><kbd>&rarr;</kbd> walk</li>
+                <li><kbd>SPACE</kbd> jump &middot; again to <b>flap</b></li>
+                <li>hold <kbd>SPACE</kbd> to glide</li>
+                <li><kbd>P</kbd> pause &middot; <kbd>M</kbd> sound</li>
+              </ul>
+              <ul class="howto touch-only">
+                <li>&#9664; &#9654; slide to walk</li>
+                <li><b>A</b> jump &middot; tap again to <b>flap</b></li>
+                <li>hold <b>A</b> to glide</li>
+              </ul>
+              <p class="rotate-hint">Tip: turn sideways for a bigger view!</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="overlay" id="clear" hidden>
+          <div class="card">
+            <h2 class="big">STAGE CLEAR!</h2>
+            <p id="clear-stage"></p>
+            <p class="bonus" id="clear-bonus"></p>
+            <p>SCORE <b id="clear-score"></b></p>
+            <p class="dim" id="clear-next"></p>
+            <button class="btn primary" id="btn-next">NEXT STAGE &#9654;</button>
+          </div>
+        </section>
+
+        <section class="overlay" id="over" hidden>
+          <div class="card">
+            <h2 class="big">OH NO!</h2>
+            <p>The little owl needs a rest.</p>
+            <p class="dim">Good owls never give up!</p>
+            <button class="btn primary" id="btn-retry">TRY AGAIN</button>
+          </div>
+        </section>
+
+        <section class="overlay" id="pause" hidden>
+          <div class="card">
+            <h2 class="big">PAUSED</h2>
+            <button class="btn primary" id="btn-resume">&#9654; RESUME</button>
+            <button class="btn small mute" aria-label="Toggle sound">&#9835; SOUND</button>
+          </div>
+        </section>
+
+        <section class="overlay" id="ending" hidden>
+          <video id="ending-video" src="assets/ending.mp4" poster="assets/poster.jpg" muted playsinline webkit-playsinline preload="auto"></video>
+          <button class="btn small primary" id="btn-skip">SKIP &#9654;</button>
+        </section>
+
+        <section class="overlay" id="victory" hidden>
+          <div class="card victory-card">
+            <div class="victory-text">
+              <h2 class="big">HOME AT LAST!</h2>
+              <p>You found all <b>15</b> heart apples!</p>
+              <p>SCORE <b id="win-score"></b></p>
+              <p>CANDY DOTS <b id="win-dots"></b></p>
+              <p class="bonus" id="win-best"></p>
+              <p class="dim">GOOD OWLS DO GREAT THINGS!</p>
+              <button class="btn primary" id="btn-again">PLAY AGAIN</button>
+            </div>
+            <figure class="coloring">
+              <img src="assets/coloring.jpg" alt="The hand-colored owls, heart apples and rainbows page that inspired this game">
+              <figcaption>Where it all began</figcaption>
+            </figure>
+          </div>
+        </section>
+      </div>
+
+      <div class="pad right-pad" aria-hidden="true">
+        <button class="abtn" data-key="jump">A</button>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/sprites.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
